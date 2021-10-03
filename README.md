@@ -13,7 +13,7 @@ Use `ogrinfo` to check geometry types in source (pdf) file
 
 `ogrinfo north-america-latest.osm.pbf`
 
-Displays overview of gemetry types.
+Displays overview of geometry types.
 
 ```
 INFO: Open of `north-america-latest.osm.pbf'
@@ -68,7 +68,8 @@ Loading the resulting 40Gb file with 66M records takes hours on my laptop... Bet
 Create 2dsphere index fails
 
 ```
-Index build failed: 165d1184-51f1-481a-90db-6310439343ba: Collection test.polygons ( a57eabdd-a73e-485b-8100-932bd278c791 ) :: caused by :: Can't extract geo keys: { _id: ObjectId('6159b67cfb9ff107f19ed0d4'), type: "Feature", properties: { osm_id: "8027", type: "multipolygon", natural: "water", other_tags: ""water"=>"river"" }, geometry: { type: "Polygon", coordinates: [ [ [ -137.3265104, 62.7841879 ], [ -137.3347999, 62.785039 ], [ -137.340364, 62.7827365 ], [ -137.3421156, 62.7821497 ], [ -137.342577, 62.7821228 ], [ -137.3428935, 62.782032 ], [ -137.3442786, 62.7816459 ], [ -137.3451144, 62.7816615 ], [ -137.3453611, 62.7817376 ], [ -137.3456347, 62.7818332 ], [ -137.3458117, 62.7819019 ],
+Index build failed: 165d1184-51f1-481a-90db-6310439343ba: Collection test.polygons ( a57eabdd-a73e-485b-8100-932bd278c791 ) :: caused by :: Can't extract geo keys:
+{ _id: ObjectId('6159b67cfb9ff107f19ed0d4'), type: "Feature", properties: { osm_id: "8027", type: "multipolygon", natural: "water", other_tags: ""water"=>"river"" }, geometry: { type: "Polygon", coordinates: [ [ [ -137.3265104, 62.7841879 ], [ -137.3347999, 62.785039 ], [ -137.340364, 62.7827365 ], [ -137.3421156, 62.7821497 ], [ -137.342577, 62.7821228 ], [ -137.3428935, 62.782032 ], [ -137.3442786, 62.7816459 ], [ -137.3451144, 62.7816615 ], [ -137.3453611, 62.7817376 ], [ -137.3456347, 62.7818332 ], [ -137.3458117, 62.7819019 ], ...
 ```
 
 Is this is about speed and limiting polygon size versus accuracy, add `-simplify .1` to the `ogr2ogr` command
