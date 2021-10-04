@@ -90,5 +90,14 @@ pigz -9 -k north-america-latest.osm.json
 
 # links
 
+How to convert `other_tags` info from OSM source format to geojson
+
 https://www.compose.com/articles/how-to-transform-and-use-openstreetmap-data-into-geojson-using-gdal/
+
+UHow to query OSM source for specific info during conversion
+
+https://www.compose.com/articles/how-to-transform-and-use-openstreetmap-data-into-geojson-using-gdal/
+
+Working with US Tiger data
+
 https://github.com/jgoodall/us-maps
