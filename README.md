@@ -78,7 +78,7 @@ Is this is about speed and limiting polygon size versus accuracy, add `-simplify
 
 Do one more pass to limit coordinate precision, or add to previous command
 
-`ogr2ogr -lco COORDINATE_PRECISION=4 -f GeoJSONSeq north-america-latest.precision.osm.json north-america-latest.osm.json north-america-latest.osm.pbf multipolygons`
+`ogr2ogr -lco COORDINATE_PRECISION=4 -f GeoJSONSeq north-america-latest.precision.osm.json north-america-latest.osm.json`
 
 # todo
 
