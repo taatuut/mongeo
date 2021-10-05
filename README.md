@@ -5,6 +5,101 @@ Code for working with geo data in MongoDB
 
 ## OpenStreetMap - OSM
 
+### 20211005
+
+```
+rm -rf /tmp/data/db
+mkdir -p /tmp/data/db
+mongod --dbpath /tmp/data/db
+```
+
+`ogrinfo antarctica-latest.osm.pbf`
+
+Cannot do all `ogr2ogr` stuff in one pass, eg using command below does not `explodecollections` for `multi*` geometeries. Always good to check resulting file with `ogrinfo`.
+
+`ogr2ogr -explodecollections -skipfailures -simplify .1 -makevalid -lco COORDINATE_PRECISION=4 -f GeoJSONSeq north-america-latest.osm.json north-america-latest.osm.pbf multipolygons`
+
+Instead do multiple steps (and remove temp in between files after confirming successful display in QGIS)
+
+```
+ogr2ogr -simplify .1 -makevalid -lco COORDINATE_PRECISION=4 antarctica-latest.simplify.osm.json antarctica-latest.osm.pbf multipolygons
+
+ogr2ogr -explodecollections -skipfailures antarctica-latest.explode.osm.json antarctica-latest.simplify.osm.json multipolygons
+
+ogr2ogr -f GeoJSONSeq antarctica-latest.seq.osm.json antarctica-latest.explode.osm.json
+```
+
+`mongoimport --uri mongodb://127.0.0.1:27017/test --collection polygons --type json --file antarctica-latest.seq.osm.json 2>&1 | tee antarctica-import.txt`
+
+Other help commands
+
+```
+history | cut -c 8-
+
+db.polygons.deleteMany({})
+
+db.polygons.deleteOne( { "_id" : ObjectId("615c627e02e90dfb3d807556") } )
+
+Error: Check geometry in object 615c627e02e90dfb3d8078cc or 615c627e02e90dfb3d807557
+
+db.polygons.findOne( { "_id" : ObjectId("615c627e02e90dfb3d8078cc") } )
+
+db.polygons.find( { 'properties.place': { $exists: false } } ).count()
+
+
+db.polygons.findOne( { 'properties.place': { $exists: false } } )
+{
+        "_id" : ObjectId("615c561502e90dfb3d7f6c00"),
+        "type" : "Feature",
+        "properties" : {
+                "osm_id" : "977615",
+                "name" : "Site of Special Scientific Intrest No. 8",
+                "type" : "multipolygon",
+                "leisure" : "nature_reserve"
+        },
+        "geometry" : {
+                "type" : "Polygon",
+                "coordinates" : [
+                        [
+                                [
+                                        -58.465,
+                                        -62.2359
+                                ],
+                                [
+                                        -58.4652,
+                                        -62.2363
+                                ],
+                                [
+                                        -58.4648,
+                                        -62.2363
+                                ],
+                                [
+                                        -58.4648,
+                                        -62.2359
+                                ],
+                                [
+                                        -58.465,
+                                        -62.2359
+                                ]
+                        ]
+                ]
+        }
+```
+
+_Questions_
+
+Q:
+QGIS 3 on Mac OS - Where is the configuration directory?
+
+A:
+From the QGIS Settings Menu, User Profiles, select "Open active profile folder". You'll be taken straight there.
+
+_Tips_
+
+One tip (shot myself in the foot first): create the 2dsphere index upfront, then run the mongoimport on a (huge) json file. It will then all but the 'invalid' geojson. If you do it the other way around you get into a loop of index creation breaking on failing documents one by one which can be a pita with huge sets.
+
+### 20211004
+
 Get some data in protobuf format. Start small with `Antarctica` first, download some `*.osm.pbf` from https://download.geofabrik.de/
 
 Get gdal with `brew install gdal` or similar.
