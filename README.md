@@ -5,6 +5,118 @@ Code for working with geo data in MongoDB
 
 ## OpenStreetMap - OSM
 
+### 20211014
+
+Prep TomTom
+
+```
+rm -rf /tmp/data/tomtom
+mkdir -p /tmp/data/tomtom
+mongod --dbpath /tmp/data/tomtom
+```
+
+#### OSM Gelderland polygons
+
+Use Compass to connect to `localhost` and create database `tomtom`, with collection `osm-gelderland-latest-polygons` and 2dsphere index on field `geometry`
+
+In Compass `mongosh`
+
+```
+db.getCollection('osm-gelderland-latest-polygons').drop()
+db.createCollection('osm-gelderland-latest-polygons')
+db.getCollection('osm-gelderland-latest-polygons').createIndex( { "geometry" : "2dsphere" } )
+```
+
+Alternative to remove documents without deleting collection hence indexes. Can be slower.
+
+```
+db.getCollection('osm-gelderland-latest-polygons').deleteMany({})
+```
+
+In terminal
+
+```
+cd data
+ogr2ogr -simplify .1 -makevalid -lco COORDINATE_PRECISION=4 gelderland-latest-polygons.simplify.osm.json gelderland-latest.osm.pbf multipolygons
+ogr2ogr -explodecollections -skipfailures gelderland-latest-polygons.explode.osm.json gelderland-latest-polygons.simplify.osm.json multipolygons
+ogr2ogr -f GeoJSONSeq gelderland-latest-polygons.seq.osm.json gelderland-latest-polygons.explode.osm.json
+
+mongoimport --uri mongodb://127.0.0.1:27017/tomtom --collection osm-gelderland-latest-polygons --type json --file gelderland-latest-polygons.seq.osm.json 2>&1 | tee osm-gelderland-latest-polygons-import.txt 
+```
+
+Open QGIS and add polygon layer
+
+#### OSM Gelderland points
+
+```
+db.getCollection('osm-gelderland-latest-points').drop()
+db.createCollection('osm-gelderland-latest-points')
+db.getCollection('osm-gelderland-latest-points').createIndex( { "geometry" : "2dsphere" } )
+```
+
+```
+ogr2ogr -simplify .1 -makevalid -lco COORDINATE_PRECISION=4 gelderland-latest-points.simplify.osm.json gelderland-latest.osm.pbf points
+ogr2ogr -explodecollections -skipfailures gelderland-latest-points.explode.osm.json gelderland-latest-points.simplify.osm.json points
+ogr2ogr -f GeoJSONSeq gelderland-latest-points.seq.osm.json gelderland-latest-points.explode.osm.json
+
+mongoimport --uri mongodb://127.0.0.1:27017/tomtom --collection osm-gelderland-latest-points --type json --file gelderland-latest-points.seq.osm.json 2>&1 | tee osm-gelderland-latest-points-import.txt 
+```
+
+Open QGIS and add points layer
+Open Compass and add points layer
+
+#### OSM Antarctica polygons
+
+```
+db.getCollection('osm-antarctica-latest-polygons').drop()
+db.createCollection('osm-antarctica-latest-polygons')
+db.getCollection('osm-antarctica-latest-polygons').createIndex( { "geometry" : "2dsphere" } )
+```
+
+```
+ogr2ogr -simplify .1 -makevalid -lco COORDINATE_PRECISION=4 antarctica-latest-polygons.simplify.osm.json antarctica-latest.osm.pbf multipolygons
+ogr2ogr -explodecollections -skipfailures antarctica-latest-polygons.explode.osm.json antarctica-latest-polygons.simplify.osm.json multipolygons
+ogr2ogr -f GeoJSONSeq antarctica-latest-polygons.seq.osm.json antarctica-latest-polygons.explode.osm.json
+
+mongoimport --uri mongodb://127.0.0.1:27017/tomtom --collection osm-antarctica-latest-polygons --type json --file antarctica-latest-polygons.seq.osm.json 2>&1 | tee osm-antarctica-latest-polygons-import.txt 
+```
+
+#### OSM North-America polygons
+
+```
+db.getCollection('osm-north-america-latest-polygons').drop()
+db.createCollection('osm-north-america-latest-polygons')
+db.getCollection('osm-north-america-latest-polygons').createIndex( { "geometry" : "2dsphere" } )
+```
+
+```
+ogr2ogr -simplify .1 -makevalid -lco COORDINATE_PRECISION=4 north-america-latest-polygons.simplify.osm.json north-america-latest.osm.pbf multipolygons
+ogr2ogr -explodecollections -skipfailures north-america-latest-polygons.explode.osm.json north-america-latest-polygons.simplify.osm.json multipolygons
+ogr2ogr -f GeoJSONSeq north-america-latest-polygons.seq.osm.json north-america-latest-polygons.explode.osm.json
+
+mongoimport --uri mongodb://127.0.0.1:27017/tomtom --collection osm-north-america-latest-polygons --type json --file north-america-latest-polygons.seq.osm.json 2>&1 | tee osm-north-america-latest-polygons-import.txt 
+```
+
+head -n 10 north-america-latest.simplify.osm.json
+head -n 10 north-america-latest.explode.osm.json
+head -n 5 north-america-latest.seq.osm.json
+
+QGIS fails for north-america polygons layer, too big RAM exhausted
+
+`Error: cursor id 2392613233041230777 not found, full error: {'ok': 0.0, 'errmsg': 'cursor id 2392613233041230777 not found', 'code': 43, 'codeName': 'CursorNotFound'}`
+
+### Notes
+
+Following command fails... does not like - in name?
+
+`db.osm-gelderland-latest-polygons.deleteMany({})`
+
+Works
+
+`db.getCollection('osm-gelderland-latest-polygons').deleteMany({})`
+
+Download OSM data in pbf format from https://download.geofabrik.de/
+
 ### 20211005
 
 ```

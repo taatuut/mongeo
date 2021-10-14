@@ -1,0 +1,19 @@
+{
+    "tileid": "ea7cfcad-31d3-4cce-9a48-23736e77517a",
+    "name": "my_layername",
+    "description": "more about my layer",
+    "maptype": "HD",
+    "majorversion": "2",
+    "minorversion": "1",
+    "ts": "2021-10-10T13:49:51.141Z",
+    "zoomlevel": "15",
+    "center": {
+        "type": "Feature",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [2.500000,49.500000]
+        }
+      },
+    "type": "overlay",
+    "format": "pbf"
+}
