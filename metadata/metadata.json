@@ -1,19 +1,51 @@
 {
-    "tileid": "ea7cfcad-31d3-4cce-9a48-23736e77517a",
+  "type": "Feature",
+  "geometry": {
+    "$point": {
+      "long_lim": [
+        2,
+        8
+      ],
+      "lat_lim": [
+        49,
+        54
+      ]
+    }
+  },
+  "properties": {
+    "_id": "$objectid",
     "name": "my_layername",
     "description": "more about my layer",
-    "maptype": "HD",
-    "majorversion": "2",
-    "minorversion": "1",
-    "ts": "2021-10-10T13:49:51.141Z",
-    "zoomlevel": "15",
-    "center": {
-        "type": "Feature",
-        "geometry": {
-          "type": "Point",
-          "coordinates": [2.500000,49.500000]
-        }
-      },
-    "type": "overlay",
+    "maptype": {
+      "$choose": {
+        "from": [
+          "HD",
+          "SD"
+        ],
+        "weights": [
+          3,
+          1
+        ]
+      }
+    },
+    "majorversion": {"$integer": {"min": 1, "max": 3}},
+    "minorversion": {"$integer": {"min": 0, "max": 9}},
+    "ts": "$date",
+    "zoomlevel": {"$integer": {"min": 0, "max": 22}},
+    "type": {
+      "$choose": {
+        "from": [
+          "overlay",
+          "base",
+          "special"
+        ],
+        "weights": [
+          2,
+          1,
+          1
+        ]
+      }
+    },
     "format": "pbf"
+  }
 }

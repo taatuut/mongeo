@@ -1,6 +1,9 @@
 # miscellaneous
 **/.DS_Store
 
+# tools folder
+tools/
+
 # data folder
 data/
 
